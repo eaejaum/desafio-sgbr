@@ -1,7 +1,10 @@
 import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Eye, EyeOff } from "lucide-react-native";
+import { useState } from "react";
 
 export default function Login() {
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   return (
     <View className="flex-1 justify-center items-center">
       <Text className="font-bold text-white text-3xl mb-5">LOGIN</Text>
@@ -14,13 +17,19 @@ export default function Login() {
         <View>
           <TextInput
             placeholderTextColor="#A0A0A0"
-            secureTextEntry
+            secureTextEntry={!isPasswordVisible}
             placeholder="Senha"
             className="bg-white rounded py-3 px-4 text-black"
           />
-          <TouchableOpacity className="absolute right-4 top-3">
-            <EyeOff color="#333333" size={18} />
-            {/* <Eye /> */}
+          <TouchableOpacity 
+            className="absolute right-4 top-3"
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+          >
+            {isPasswordVisible ? (
+                <Eye color="#333333" size={18} />
+            ) : (
+                <EyeOff color="#333333" size={18} />
+            )}
           </TouchableOpacity>
         </View>
       </View>
