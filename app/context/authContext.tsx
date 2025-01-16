@@ -1,6 +1,7 @@
 import User from "@/app/types/User";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 type AuthContextData = {
   user: User | null;
@@ -21,6 +22,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signin = async (user: string, password: string): Promise<void> => {
     try {
+      setLoading(true);
       const response = await fetch(
         "https://test-api-y04b.onrender.com/signIn",
         {
@@ -32,15 +34,17 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
       if (!response.ok) {
-        throw new Error("Erro ao fazer login, verifique suas credenciais");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao fazer login, verifique suas credenciais");
       }
-      console.log('response', response)
       const responseData: User = await response.json();
-      console.log('responseData', responseData)
       await AsyncStorage.setItem("user", JSON.stringify(responseData));
+      Alert.alert("Sucesso", "Login realizado com sucesso!");
       setUser(responseData);
-    } catch (error) {
-      console.error("Erro ao fazer login: ", error);
+    } catch (error: any) {
+        Alert.alert("Erro", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,7 +80,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         user,
         signin,
         signout,
-        loading
+        loading,
       }}
     >
       {children}

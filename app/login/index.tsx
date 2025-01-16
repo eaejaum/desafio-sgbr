@@ -10,7 +10,6 @@ import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthContext } from "@/app/context/authContext";
-import User from "../types/User";
 
 interface UserFormData {
   user: string;
@@ -18,15 +17,24 @@ interface UserFormData {
 }
 
 export default function Login() {
-  const { signin } = useAuthContext();
+  const { signin, loading, user } = useAuthContext();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { handleSubmit, control } = useForm<UserFormData>();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset
+  } = useForm<UserFormData>({
+    defaultValues: {
+      user: "",
+      password: "",
+    },
+  });
 
   const onSubmit = async (data: UserFormData) => {
-    console.log(data);
     try {
       await signin(data.user, data.password);
-      Alert.alert("Sucesso", "Login realizado com sucesso!");
+      reset();
     } catch (error) {
       Alert.alert("Erro", "Erro ao fazer login");
     }
@@ -39,29 +47,49 @@ export default function Login() {
         <Controller
           control={control}
           name="user"
+          rules={{
+            required: "O nome de usuário é obrigatório",
+          }}
           render={({ field: { onChange, value } }) => (
-            <TextInput
-              placeholderTextColor="#A0A0A0"
-              placeholder="Nome de usuário"
-              className="bg-white rounded py-3 px-4 mb-3 text-black"
-              value={value}
-              onChangeText={onChange}
-            />
+            <View className="mb-3">
+              <TextInput
+                placeholderTextColor="#A0A0A0"
+                placeholder="Nome de usuário"
+                className="bg-white rounded py-3 px-4 text-black"
+                value={value}
+                onChangeText={onChange}
+              />
+              {errors.user && (
+                <Text className="text-red-500 text-sm pt-1">
+                  {errors.user.message}
+                </Text>
+              )}
+            </View>
           )}
         />
         <View>
           <Controller
             control={control}
             name="password"
+            rules={{
+              required: "A senha é obrigatória",
+            }}
             render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholderTextColor="#A0A0A0"
-                secureTextEntry={!isPasswordVisible}
-                placeholder="Senha"
-                className="bg-white rounded py-3 px-4 text-black"
-                value={value}
-                onChangeText={onChange}
-              />
+              <View>
+                <TextInput
+                  placeholderTextColor="#A0A0A0"
+                  secureTextEntry={!isPasswordVisible}
+                  placeholder="Senha"
+                  className="bg-white rounded py-3 px-4 text-black"
+                  value={value}
+                  onChangeText={onChange}
+                />
+                {errors.password && (
+                  <Text className="text-red-500 text-sm pt-1">
+                    {errors.password.message}
+                  </Text>
+                )}
+              </View>
             )}
           />
           <TouchableOpacity
