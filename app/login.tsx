@@ -17,7 +17,7 @@ interface UserFormData {
 }
 
 export default function Login() {
-  const { signin, loading, user } = useAuthContext();
+  const { signin } = useAuthContext();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const {
     handleSubmit,
@@ -41,7 +41,7 @@ export default function Login() {
   };
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex flex-1 px-5 flex-col justify-center items-center pb-28 bg-gray-900">
       <Text className="font-bold text-white text-3xl mb-5">LOGIN</Text>
       <View className="w-full mb-6">
         <Controller

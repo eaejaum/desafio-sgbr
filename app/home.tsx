@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuthContext } from "../context/authContext";
+import { useAuthContext } from "./context/authContext";
 import { Car, LogOut, Search } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { useCarsContext } from "../context/carsContext";
-import CarBrand from "../types/CarBrand";
+import { useCarsContext } from "./context/carsContext";
+import CarBrand from "./types/CarBrand";
+import { Link } from "expo-router";
 
 export default function Home() {
   const { signout, authUser } = useAuthContext();
@@ -19,28 +20,26 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fecthData = async () => {
-      await fetchBrandsData();
-    };
-    fecthData();
-  }, []);
+    if (!carBrands || carBrands.length === 0) {
+      const fetchData = () => {
+        fetchBrandsData();
+      };
+      fetchData();
+    }
+  }, [carBrands]);
 
-  const logOut = async () => {
-    await signout();
+  const logOut = () => {
+    signout();
   };
-  
+
   const confirmLogout = () => {
-    Alert.alert(
-      "Confirmar Logout",
-      "Você tem certeza que deseja sair?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Sim", onPress: logOut },
-      ]
-    );
+    Alert.alert("Confirmar Logout", "Você tem certeza que deseja sair?", [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Sim", onPress: logOut },
+    ]);
   };
 
-  const handleSearch = (text: string) => {
+  const handleSearchBrands = (text: string) => {
     setSearchTerm(text);
   };
 
@@ -50,29 +49,31 @@ export default function Home() {
 
   const renderBrandItem = ({ item }: { item: CarBrand }) => (
     <View key={item.codigo} className="mb-4">
-      <TouchableOpacity
-        className="bg-white rounded-xl p-4 shadow-lg flex-row items-center justify-between"
-        onPress={logOut}
-      >
-        <Car size={24} color="#333" />
-        <Text className="ml-3 text-lg font-semibold text-gray-800">
-          {item.nome}
-        </Text>
-      </TouchableOpacity>
+      <Link href={"/1233"} asChild>
+        <TouchableOpacity className="bg-white rounded-xl p-4 shadow-lg flex-row items-center justify-between">
+          <Car size={24} color="#333" />
+          <Text className="ml-3 text-lg font-semibold text-gray-800">
+            {item.nome}
+          </Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 
   return (
-    <View className="flex-1 mt-20">
+    <View className="flex flex-1 px-5 flex-col justify-center pt-20 bg-gray-900">
       {authUser && (
         <Text className="text-white font-bold text-2xl mb-6">
-          Olá, <Text className="text-emerald-500 font-bold text-3xl">{authUser.user.name}</Text>
+          Olá,{" "}
+          <Text className="text-emerald-500 font-bold text-3xl">
+            {authUser.user.name}
+          </Text>
         </Text>
       )}
       <View className="w-full flex-row items-center mb-6 relative">
         <TextInput
           placeholderTextColor="#A0A0A0"
-          onChangeText={handleSearch}
+          onChangeText={handleSearchBrands}
           placeholder="Digite o nome da marca..."
           className="flex-1 bg-gray-700 rounded py-3 px-4 text-white"
         />

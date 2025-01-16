@@ -7,9 +7,7 @@ export default function Index() {
   return (
     <AuthContextProvider>
       <CarsContextProvider>
-        <View className="flex flex-1 px-5 flex-col justify-center bg-gray-900">
-          <AuthRoutes />
-        </View>
+        <AuthRoutes />
       </CarsContextProvider>
     </AuthContextProvider>
   );
