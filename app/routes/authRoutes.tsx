@@ -4,7 +4,7 @@ import Login from "../login";
 import Home from "../home";
 
 export default function AuthRoutes() {
-  const { user, loading } = useAuthContext();
+  const { authUser, loading } = useAuthContext();
 
   if (loading) {
     return (
@@ -14,5 +14,5 @@ export default function AuthRoutes() {
     );
   }
 
-  return user ? <Home /> : <Login />
+  return authUser ? <Home /> : <Login />
 }

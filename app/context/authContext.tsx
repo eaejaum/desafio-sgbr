@@ -1,10 +1,10 @@
-import User from "@/app/types/User";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
+import { Auth } from "../types/Auth";
 
 type AuthContextData = {
-  user: User | null;
+  authUser: Auth | null;
   loading: boolean;
   signin: (user: string, password: string) => void;
   signout: () => void;
@@ -17,7 +17,7 @@ export const AuthContext = createContext<AuthContextData | undefined>(
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [authUser, setAuthUser] = useState<Auth | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const signin = async (user: string, password: string): Promise<void> => {
@@ -37,10 +37,10 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
         const errorData = await response.json();
         throw new Error(errorData.message || "Erro ao fazer login, verifique suas credenciais");
       }
-      const responseData: User = await response.json();
+      const responseData: Auth = await response.json();
       await AsyncStorage.setItem("user", JSON.stringify(responseData));
       Alert.alert("Sucesso", "Login realizado com sucesso!");
-      setUser(responseData);
+      setAuthUser(responseData);
     } catch (error: any) {
         Alert.alert("Erro", error.message);
     } finally {
@@ -51,7 +51,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const signout = async (): Promise<void> => {
     try {
       await AsyncStorage.removeItem("user");
-      setUser(null);
+      setAuthUser(null);
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }
@@ -62,7 +62,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const storedUser = await AsyncStorage.getItem("user");
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          setAuthUser(JSON.parse(storedUser));
         }
       } catch (error) {
         console.error("Erro ao carregar usuário:", error);
@@ -77,7 +77,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <AuthContext.Provider
       value={{
-        user,
+        authUser,
         signin,
         signout,
         loading,
