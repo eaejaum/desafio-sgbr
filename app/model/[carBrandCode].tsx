@@ -1,8 +1,7 @@
-import { ArrowLeft, Car, Search } from "lucide-react-native";
+import { ArrowLeft, Car, MoveRight } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   FlatList,
   Pressable,
   Text,
@@ -37,63 +36,62 @@ export default function Model() {
     model.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const renderModelItem = ({ item }:{ item: CarModel}) => (
-    <View key={item.codigo} className="mb-4">
-      <TouchableOpacity className="bg-white rounded-xl p-4 shadow-lg flex-row items-center justify-between">
-        <Car size={24} color="#333" />
-        <Text className="ml-3 text-lg font-semibold text-gray-800">
-          {item.nome}
-        </Text>
+  const renderModelItem = ({ item }: { item: CarModel }) => (
+    <View key={item.codigo} className="mb-6">
+      <TouchableOpacity className="bg-white rounded-xl p-10 shadow-lg flex-col items-center justify-between g-2">
+        <Car size={50} color="#333" />
+        <Text className="text-lg font-semibold text-black">{item.nome}</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <View className="flex-1 pt-20 px-5 flex-col bg-gray-900">
-      <Pressable
-        onPress={() => router.back()}
-        className="flex-row items-center mb-6"
+    <View className="flex flex-1 flex-col bg-slate-900">
+      <View
+        style={{ height: 180 }}
+        className="flex bg-white rounded-bl-xl rounded-br-xl mb-6 px-6 pb-6 p-10"
       >
-        <ArrowLeft size={24} color="#FFF" />
-        <Text className="text-white text-lg ml-2">Voltar</Text>
-      </Pressable>
-      <View className="w-full flex-row items-center mb-6 relative">
-        <TextInput
-          placeholderTextColor="#A0A0A0"
-          onChangeText={handleSearchModels}
-          placeholder="Digite o nome do modelo..."
-          className="flex-1 bg-gray-700 rounded py-3 px-4 text-white"
+        <Pressable
+          onPress={() => router.back()}
+          className="flex flex-row items-center mt-6 mb-4"
+        >
+          <ArrowLeft size={24} color="#ACB5BB" />
+          <Text className="text-black text-normal ml-2">Voltar</Text>
+        </Pressable>
+        <View className="w-full flex-row mb-6 p-2">
+          <TextInput
+            placeholderTextColor="#ACB5BB"
+            onChangeText={handleSearchModels}
+            placeholder="Digite o nome do modelo..."
+            className="flex-1 pr-10 text-black"
+          />
+          <View className="rounded-full bg-sky-600 p-3">
+            <MoveRight color="white" />
+          </View>
+        </View>
+      </View>
+
+      <View className="flex-1 px-6">
+        {loading && (
+          <View className="flex-1 justify-center items-center">
+            <ActivityIndicator size="large" color="#0284c7" />
+          </View>
+        )}
+
+        <FlatList
+          data={filteredModels}
+          renderItem={renderModelItem}
+          keyExtractor={(item) => item.codigo.toString()}
+          className="pb-6"
+          ListEmptyComponent={
+            !loading && !filteredModels?.length ? (
+              <Text className="text-white text-center text-xl">
+                Nenhum modelo encontrado
+              </Text>
+            ) : null
+          }
         />
-        <View className="absolute right-4">
-          <Search color="#A0A0A0" />
-        </View>
       </View>
-
-
-      <View className="mb-3">
-        <Text className="text-emerald-500 font-bold text-3xl">MODELOS</Text>
-        <View className="border-t-2 border-emerald-500 mt-2"></View>
-      </View>
-
-      {loading && (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#00ff00" />
-        </View>
-      )}
-
-      <FlatList
-        data={filteredModels}
-        renderItem={renderModelItem}
-        keyExtractor={(item) => item.codigo.toString()}
-        className="pb-6"
-        ListEmptyComponent={
-          !loading && !filteredModels?.length ? (
-            <Text className="text-white text-center text-xl">
-              Nenhum modelo encontrado
-            </Text>
-          ) : null
-        }
-      />
     </View>
   );
 }
