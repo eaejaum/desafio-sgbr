@@ -33,7 +33,7 @@ export default function Login() {
 
   const onSubmit = async (data: UserFormData) => {
     try {
-      await signin(data.user, data.password);
+      signin(data.user, data.password);
       reset();
     } catch (error) {
       Alert.alert("Erro", "Erro ao fazer login");
