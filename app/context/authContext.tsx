@@ -62,6 +62,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const storedUser = await AsyncStorage.getItem("user");
         if (storedUser) {
+          setLoading(true);
           setAuthUser(JSON.parse(storedUser));
         }
       } catch (error) {
