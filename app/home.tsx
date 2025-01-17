@@ -2,14 +2,16 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  Keyboard,
+  Platform,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useAuthContext } from "./context/authContext";
-import { Car, Caravan, CarFront, LogOut, MoveRight } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { CarFront, LogOut, MoveRight } from "lucide-react-native";
+import { useEffect, useRef, useState } from "react";
 import { useCarsContext } from "./context/carsContext";
 import CarBrand from "./types/CarBrand";
 import { Link } from "expo-router";
@@ -18,6 +20,7 @@ export default function Home() {
   const { signout, authUser } = useAuthContext();
   const { carBrands, fetchBrandsData, loading } = useCarsContext();
   const [searchTerm, setSearchTerm] = useState("");
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     if (!carBrands || carBrands.length === 0) {
@@ -46,6 +49,15 @@ export default function Home() {
   const filteredBrands = carBrands?.filter((brand) =>
     brand.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const closeKeyboard = () => {
+    inputRef.current?.blur();
+    if (Platform.OS === "ios") {
+      setTimeout(() => Keyboard.dismiss(), 100); // Dá um pequeno delay no iOS
+    } else {
+      Keyboard.dismiss(); // No Android funciona direto
+    }
+  };
 
   const renderBrandItem = ({ item }: { item: CarBrand }) => (
     <View key={item.codigo} className="mb-6">
@@ -86,14 +98,18 @@ export default function Home() {
         )}
         <View className="w-full flex-row mb-6 p-2">
           <TextInput
+            ref={inputRef}
             placeholderTextColor="#ACB5BB"
             onChangeText={handleSearchBrands}
             placeholder="Digite o nome da marca..."
             className="flex-1 pr-10 text-black"
           />
-          <View className="rounded-full bg-sky-600 p-3">
+          <TouchableOpacity 
+            className="rounded-full bg-sky-600 p-3"
+            onPress={closeKeyboard}
+          >
             <MoveRight color="white" />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
 
