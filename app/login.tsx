@@ -1,12 +1,12 @@
 import {
   Alert,
-  Button,
+  Image,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Eye, EyeOff } from "lucide-react-native";
+import { Eye, EyeOff, LockKeyhole, User } from "lucide-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthContext } from "@/app/context/authContext";
@@ -18,12 +18,13 @@ interface UserFormData {
 
 export default function Login() {
   const { signin } = useAuthContext();
+  const logoImage = require("../assets/images/logo-sgbr1.png");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset
+    reset,
   } = useForm<UserFormData>({
     defaultValues: {
       user: "",
@@ -41,8 +42,13 @@ export default function Login() {
   };
 
   return (
-    <View className="flex flex-1 px-5 flex-col justify-center items-center pb-28 bg-gray-900">
-      <Text className="font-bold text-white text-3xl mb-5">LOGIN</Text>
+    <View className="flex-1 px-7 flex-col justify-center items-center pb-60 bg-slate-900 relative">
+      <View className="flex items-center justify-center mb-8">
+        <Image source={logoImage} className="w-48 h-24 mb-6" />
+        <Text className="text-white font-semibold text-4xl text-center leading-10">
+          Bem-vindo! Faça login para continuar
+        </Text>
+      </View>
       <View className="w-full mb-6">
         <Controller
           control={control}
@@ -51,22 +57,30 @@ export default function Login() {
             required: "O nome de usuário é obrigatório",
           }}
           render={({ field: { onChange, value } }) => (
-            <View className="mb-3">
+            <View>
               <TextInput
-                placeholderTextColor="#A0A0A0"
+                placeholderTextColor="#ACB5BB"
                 placeholder="Nome de usuário"
-                className="bg-white rounded py-3 px-4 text-black"
+                className={
+                  errors.user
+                    ? "bg-white rounded-xl py-4 px-4 pl-12 text-black"
+                    : "bg-white rounded-tl-xl rounded-tr-xl py-4 px-4 pl-12 text-black"
+                }
                 value={value}
                 onChangeText={onChange}
               />
               {errors.user && (
-                <Text className="text-red-500 text-sm pt-1">
+                <Text className="text-red-600 text-sm pt-1 pb-2">
                   {errors.user.message}
                 </Text>
               )}
+              <View className="absolute left-4 top-4">
+                <User color="#0284c7" size={18} />
+              </View>
             </View>
           )}
         />
+        {!errors.user && <View className="border-t-2 border-gray-100"></View>}
         <View>
           <Controller
             control={control}
@@ -77,15 +91,19 @@ export default function Login() {
             render={({ field: { onChange, value } }) => (
               <View>
                 <TextInput
-                  placeholderTextColor="#A0A0A0"
+                  placeholderTextColor="#ACB5BB"
                   secureTextEntry={!isPasswordVisible}
                   placeholder="Senha"
-                  className="bg-white rounded py-3 px-4 text-black"
+                  className={
+                    errors.user
+                      ? "bg-white rounded-xl py-4 px-4 pl-12 pr-12 text-black"
+                      : "bg-white rounded-bl-xl rounded-br-xl py-4 px-4 pr-12 pl-12 text-black"
+                  }
                   value={value}
                   onChangeText={onChange}
                 />
                 {errors.password && (
-                  <Text className="text-red-500 text-sm pt-1">
+                  <Text className="text-red-600 text-sm pt-1">
                     {errors.password.message}
                   </Text>
                 )}
@@ -93,22 +111,25 @@ export default function Login() {
             )}
           />
           <TouchableOpacity
-            className="absolute right-4 top-3"
+            className="absolute right-4 top-4"
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
           >
             {isPasswordVisible ? (
-              <Eye color="#333333" size={18} />
+              <Eye color="#ACB5BB" size={18} />
             ) : (
-              <EyeOff color="#333333" size={18} />
+              <EyeOff color="#ACB5BB" size={18} />
             )}
           </TouchableOpacity>
+          <View className="absolute left-4 top-4">
+            <LockKeyhole color="#0284c7" size={18} />
+          </View>
         </View>
       </View>
       <TouchableOpacity
-        className="bg-emerald-700 rounded-lg py-3 px-6 w-full items-center"
+        className="bg-sky-600 rounded-2xl py-4 px-6 w-full items-center mt-5"
         onPress={handleSubmit(onSubmit)}
       >
-        <Text className="text-white font-bold text-xl">ACESSAR CONTA</Text>
+        <Text className="text-white font-normal text-xl">Entrar</Text>
       </TouchableOpacity>
     </View>
   );

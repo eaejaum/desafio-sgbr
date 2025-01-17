@@ -8,8 +8,8 @@ export default function AuthRoutes() {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-900">
-        <ActivityIndicator size="large" color="#00ff00" />
+      <View className="flex-1 justify-center items-center bg-slate-900">
+        <ActivityIndicator size="large" color="#0284c7" />
       </View>
     );
   }
