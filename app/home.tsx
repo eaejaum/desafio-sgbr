@@ -92,7 +92,7 @@ export default function Home() {
               Olá, {authUser.user.name}
             </Text>
             <Text className="text-black font-normal text-base">
-              Pronto para discobrir carros novos?
+              Pronto para descobrir carros novos?
             </Text>
           </View>
         )}
