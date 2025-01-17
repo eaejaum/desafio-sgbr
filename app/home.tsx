@@ -49,7 +49,7 @@ export default function Home() {
 
   const renderBrandItem = ({ item }: { item: CarBrand }) => (
     <View key={item.codigo} className="mb-4">
-      <Link href={"/1233"} asChild>
+      <Link href={`/model/${item.codigo}`} asChild>
         <TouchableOpacity className="bg-white rounded-xl p-4 shadow-lg flex-row items-center justify-between">
           <Car size={24} color="#333" />
           <Text className="ml-3 text-lg font-semibold text-gray-800">

@@ -38,12 +38,13 @@ export const CarsContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchModelsData = async (brandId: number): Promise<void> => {
     try {
+      setCarModels(null);
       setLoading(true);
       const response = await fetch(
         `https://parallelum.com.br/fipe/api/v1/carros/marcas/${brandId}/modelos`
       );
-      const responseData: CarModel[] = await response.json();
-      setCarModels(responseData);
+      const responseData = await response.json();
+      setCarModels(responseData.modelos);
       setLoading(false);
     } catch (error) {
       console.error("Erro ao buscar modelos de carro: ", error);
